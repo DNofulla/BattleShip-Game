@@ -1,8 +1,6 @@
-/*
+/*	
 	Daniel Nofulla
-	ICSI 333
-	Project 4
-	Battleship Multiplayer
+	Battleship Multiplayer Game
 */
 
 #include <stdio.h>
