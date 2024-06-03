@@ -1,4 +1,4 @@
-/*	
+/*
 	Daniel Nofulla
 	Battleship Multiplayer Game
 */
@@ -21,24 +21,24 @@
 #define column 10
 
 void error(char *c);
-//struct for state hit or miss.
+// struct for state hit or miss.
 /*
-	This structure records each movement. 
-	variable x and y indicate fired at. 
-	hitOrMiss indicates ship type 
-	Next points next structure. 
+	This structure records each movement.
+	variable x and y indicate fired at.
+	hitOrMiss indicates ship type
+	Next points next structure.
 */
 typedef struct node
 {
 	int x;
 	int y;
-	struct node *Next; //coordinates* node
+	struct node *Next; // coordinates* node
 	char hitOrMiss[5];
 
 } coordinates;
 
-static char userLetter; //user input letter
-static int userDigit;	//user input digit
+static char userLetter; // user input letter
+static int userDigit;	// user input digit
 static int numberOfHit = 18;
 static int countOfHit = 0;
 static int EXIT = 1;
@@ -50,7 +50,7 @@ struct sockaddr_in server_addr;
 struct sockaddr_in client_addr;
 
 /*
- this function return sockfd 
+ this function return sockfd
  */
 void clientMode(char *addrs)
 {
@@ -107,8 +107,8 @@ void serverMode()
 void receivedCoordinates(coordinates **head, coordinates **current, int x, int y, int argc)
 {
 	x = x - 65;
-	//when temp's next is null, allocate new data at the next node and set the x and y.
-	//if head is null, create new data
+	// when temp's next is null, allocate new data at the next node and set the x and y.
+	// if head is null, create new data
 	int sendNum;
 	int recevNum;
 	char sendMess[4];
@@ -126,7 +126,7 @@ void receivedCoordinates(coordinates **head, coordinates **current, int x, int y
 		msg[0] = 48;
 	}
 
-	if (argc == 3) //client version
+	if (argc == 3) // client version
 	{
 
 		sendNum = send(sockfd, msg, sizeof(msg), 0);
@@ -142,7 +142,7 @@ void receivedCoordinates(coordinates **head, coordinates **current, int x, int y
 			error("client received message fail from server..\n");
 		}
 	}
-	else if (argc == 2) //server version
+	else if (argc == 2) // server version
 	{
 		recevNum = recv(sockfd_inserver, receive, sizeof(receive), 0);
 		sendNum = send(sockfd_inserver, msg, sizeof(msg), 0);
@@ -185,16 +185,16 @@ void initialization(char **gameboard, int argc, char *addrs)
 
 	while (ship_number > 0)
 	{
-		i = rand() % 10; //prevent to escapte the gameboard
-		j = rand() % 10; //when size of ship get smaller, more free to setted.
+		i = rand() % 10; // prevent to escapte the gameboard
+		j = rand() % 10; // when size of ship get smaller, more free to setted.
 
 		if (gameboard[i][j] == '1' || gameboard[i] == '1' || &gameboard[j] == '1' || (i + ship_number) > 9 || (j + ship_number) > 9)
 		{
 			continue;
 		}
-		hx = rand() % 2; //horizontal or vertical
+		hx = rand() % 2; // horizontal or vertical
 
-		if (hx == 0) //horizontal
+		if (hx == 0) // horizontal
 		{
 			int check;
 			for (check = i; check < i + ship_number; check++)
@@ -214,7 +214,7 @@ void initialization(char **gameboard, int argc, char *addrs)
 				}
 			}
 		}
-		if (hx == 1) //vertical
+		if (hx == 1) // vertical
 		{
 			int check;
 			for (check = j; check < j + ship_number; check++)
@@ -266,7 +266,7 @@ void initialization(char **gameboard, int argc, char *addrs)
 	printf("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
 }
 /*
- This method make the game board free. 
+ This method make the game board free.
  */
 void Teardown(char **gameboard, coordinates *head, int argc)
 {
@@ -329,15 +329,15 @@ void acceptInput(char **gameboard, coordinates **head, coordinates **current, in
 	{
 		printf("Please enter a number 0-9: ");
 		isDigit = scanf("%d", &userDigit);
-		//check error
-		if (isDigit == 0) //check user typed number
+		// check error
+		if (isDigit == 0) // check user typed number
 		{
 			printf("Invalied input. You can only enter a number.\n");
 			while ((getchar()) != '\n')
 				;
 		}
 
-		if (userDigit < 0 || userDigit > 9) //check user typed valid range of number
+		if (userDigit < 0 || userDigit > 9) // check user typed valid range of number
 		{
 			printf("Invalied number!\n");
 			while ((getchar()) != '\n')
@@ -347,15 +347,15 @@ void acceptInput(char **gameboard, coordinates **head, coordinates **current, in
 
 	printf("----------------------BATTLE SHIP----------------------\n");
 	receivedCoordinates(head, current, userLetter, userDigit, argc);
-	UpdateState(gameboard, current, argc); //pass the structure to UpdateState method.
+	UpdateState(gameboard, current, argc); // pass the structure to UpdateState method.
 }
 
 /*
-	alter------> actually check the value entered. 
+	alter------> actually check the value entered.
 */
 void UpdateState(char **gameboard, coordinates **current, int argc)
 {
-	//is hit or miss
+	// is hit or miss
 	int x = (*current)->x;
 	int y = (*current)->y;
 	if (gameboard[x][y] == '1') // board shot 'Hit'
@@ -364,7 +364,7 @@ void UpdateState(char **gameboard, coordinates **current, int argc)
 		gameboard[x][y] = 'H';
 		countOfHit++;
 	}
-	else if (gameboard[x][y] == '0') //board shot 'Miss'
+	else if (gameboard[x][y] == '0') // board shot 'Miss'
 	{
 		strcpy((*current)->hitOrMiss, "Miss");
 		gameboard[x][y] = 'M';
@@ -373,11 +373,11 @@ void UpdateState(char **gameboard, coordinates **current, int argc)
 	{
 		printf("It doesn't exist....\n");
 	}
-	DisplayStateOfTheWorld(gameboard, current, argc); //pass the structure to DisplayStateOfTheWorld
+	DisplayStateOfTheWorld(gameboard, current, argc); // pass the structure to DisplayStateOfTheWorld
 }
 
 /*
-	alter-->	print the game board and print the result of each move. 
+	alter-->	print the game board and print the result of each move.
 */
 
 /*print the result calculated in the state of the world*/
@@ -395,7 +395,7 @@ void DisplayStateOfTheWorld(char **gameboard, coordinates **current, int argc)
 
 	printf("User2 : %s!!!!!..\n", (*current)->hitOrMiss);
 	char receive[100];
-	if (argc == 3) //client version
+	if (argc == 3) // client version
 	{
 		int sendNum = send(sockfd, (*current)->hitOrMiss, sizeof((*current)->hitOrMiss), 0);
 
@@ -411,7 +411,7 @@ void DisplayStateOfTheWorld(char **gameboard, coordinates **current, int argc)
 		}
 		printf("\nMY Update: [%c%d]   %s\n", userLetter, userDigit, receive);
 	}
-	else if (argc == 2) //server version
+	else if (argc == 2) // server version
 	{
 		int recevNum = recv(sockfd_inserver, receive, sizeof(receive), 0);
 		if (recevNum == -1)
@@ -428,7 +428,7 @@ void DisplayStateOfTheWorld(char **gameboard, coordinates **current, int argc)
 
 	printf("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
 	int i = 0, j = 0;
-	//this statement check the game is over or not
+	// this statement check the game is over or not
 	if (numberOfHit == countOfHit)
 	{
 		printf("You win!\n");
@@ -436,9 +436,9 @@ void DisplayStateOfTheWorld(char **gameboard, coordinates **current, int argc)
 	}
 }
 /*
-	argv[1] for address, argv[2] for port, 
+	argv[1] for address, argv[2] for port,
 	For example, ./client 197.0.0.1 8080
-		     ./server 8080
+			 ./server 8080
 */
 int main(int argc, char **argv)
 {
@@ -457,7 +457,7 @@ int main(int argc, char **argv)
 		error("Command error: less argv\n");
 
 	PORT = port;
-	char **gameboard = (char **)malloc(column * row * sizeof(char *)); //allocation data of gameboard ad dimentio
+	char **gameboard = (char **)malloc(column * row * sizeof(char *)); // allocation data of gameboard ad dimentio
 	for (int i = 0; i < row; i++)
 	{
 		gameboard[i] = (char *)malloc(row * sizeof(char));
@@ -466,7 +466,7 @@ int main(int argc, char **argv)
 	coordinates *head = NULL;
 	coordinates *current = NULL;
 
-	initialization(gameboard, argc, argv[1]); //initial
+	initialization(gameboard, argc, argv[1]); // initial
 
 	while (EXIT)
 	{
